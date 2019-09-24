@@ -27,7 +27,7 @@ export class AuthService {
     const matchPasswords = await bcrypt.compare(password, user.password);
     if (user && matchPasswords) {
       return user;
-    } else throw new UnauthorizedException;
+    } else throw new UnauthorizedException('Email or password incorrect', '401');
   }
 
 
