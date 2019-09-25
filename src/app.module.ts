@@ -14,10 +14,10 @@ import config from './config/settings'
 
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
-import { LocalStrategy } from './auth/local.strategy';
+import { LocalStrategy } from './common/local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth/constants';
+import { jwtConstants } from './common/constants';
 // import { JwtStrategy } from './auth/jwt.strategy';
 
 import { authProviders } from './auth/auth.providers';

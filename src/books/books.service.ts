@@ -11,12 +11,12 @@ export class BooksService {
     @InjectModel('Books') private readonly booksModel: Model<Book>,
   ) { }
 
-  async findAll(): Promise<any> {
+  async findAll(): Promise<Book[]> {
     const books = await this.booksModel.find();
     return books;
   }
 
-  async addBook(req): Promise<any> {
+  async addBook(req): Promise<Book[] | HttpException | string> {
     const token: string = req.headers.authorization.split(" ")[1];
 
     const decoded = await jwt.verify(token, 'secret');
@@ -24,7 +24,7 @@ export class BooksService {
       return new HttpException('The book was not added. You are not admin', 401);
     }
 
-    const newBook: any = {
+    const newBook: Book = {
       title: req.body.title,
       author: req.body.author,
       description: req.body.description,
@@ -41,7 +41,7 @@ export class BooksService {
     } else return "Requset body  is incorrect!"
   }
 
-  async searchBook(req, res): Promise<any> {
+  async searchBook(req, res): Promise<Book[]> {
     const searched = req.params.title;
     const str = new RegExp('\w*' + searched + '\w*', 'i')
 

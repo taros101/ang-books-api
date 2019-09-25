@@ -6,20 +6,18 @@ import * as bcrypt from "bcrypt"
 import { JwtService } from '@nestjs/jwt';
 import { HttpException } from "@nestjs/common"
 import * as jwtr from "jwt-then"
-import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   public jwtService: JwtService;
   
   constructor(
-    private readonly usersService: UsersService,
     @InjectModel('Roles') private readonly rolesModel: Model<User>,
     @InjectModel('Users') private readonly userModel: Model<User>,
   ) { }
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findOne(email);
+  async validateUser(email: string, password: string): Promise<User> {
+    const user = await this.userModel.findOne({email: email});
     if (!user) {
       throw new HttpException('User not found', 404);
     }
@@ -45,10 +43,10 @@ export class AuthService {
     };
   }
 
-  async registerNewUser(req, res): Promise<any> {
+  async registerNewUser(req, res): Promise<User[]> {
     const userRole: any = await this.rolesModel.findOne({role: 'user'})
 
-    const newUser: any = {
+    const newUser: User = {
       email: req.body.email,
       password: await bcrypt.hash(req.body.password, 10),
       img: req.body.img,
@@ -57,7 +55,7 @@ export class AuthService {
     newUser.roles.push(userRole._id)
 
     try {
-      const matchUser: any = await this.userModel.findOne({ email: req.body.email })
+      const matchUser: User = await this.userModel.findOne({ email: req.body.email })
 
       if (!matchUser) {
         const createdUser = new this.userModel(newUser);

@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './users.interface';
 import * as bcrypt from "bcrypt"
-import { CreateUserDto } from './create-user.dto';
 import * as jwt from "jwt-then";
 
 @Injectable()
@@ -22,7 +21,7 @@ export class UsersService {
     return user
   }
 
-  async findUser(req, res): Promise<any> {
+  async findUser(req, res): Promise<User[]> {
     try {
       const foundedUser = await this.userModel.findOne({ _id: req.params.id })
       const userRole: any = await this.rolesModel.findOne({_id: foundedUser.roles[0]})
@@ -55,7 +54,7 @@ export class UsersService {
     }
   }
 
-  async changeAvatar(req, res): Promise<any> {
+  async changeAvatar(req, res): Promise<User[]> {
     try {
       const newAvatar = req.body.newAvatar
       const check = await this.userModel.findOne({ _id: req.params.id })
@@ -90,7 +89,7 @@ export class UsersService {
     }
   }
 
-  async editUser(req, res): Promise<any> {
+  async editUser(req, res): Promise<User[]> {
     try {
       const token: string = req.headers.authorization.split(" ")[1];
 
@@ -129,7 +128,7 @@ export class UsersService {
     }
   }
 
-  async deleteUser(req, res): Promise<any> {
+  async deleteUser(req, res): Promise<User[]> {
     try {
       const token: string = req.headers.authorization.split(" ")[1];
 
