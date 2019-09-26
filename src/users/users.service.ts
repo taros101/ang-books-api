@@ -17,12 +17,12 @@ export class UsersService {
     return await this.userModel.find();
   }
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findOne(username: string): Promise<User[] | undefined> {
     const user = await this.userModel.findOne({ email: username })
     return user
   }
 
-  async findUser(req): Promise<User[]> {
+  async findUser(req, res): Promise<any> {
       const foundedUser = await this.userModel.findOne({ _id: req.params.id })
       const userRole: any = await this.rolesModel.findOne({_id: foundedUser.roles[0]})
 
@@ -34,13 +34,17 @@ export class UsersService {
       }
       
       if (user) {
-        throw new HttpException(user, 200);
+        return res.status(200).send({ 
+          success: true, 
+          message: "Update is done",
+          data: user
+        });
       } else {
         throw new HttpException('User not found', 404);
       }
   }
 
-  async changeAvatar(req): Promise<User[]> {
+  async changeAvatar(req, res): Promise<User[]> {
       const newAvatar = req.body.newAvatar
       const check = await this.userModel.findOne({ _id: req.params.id })
   
@@ -55,7 +59,7 @@ export class UsersService {
           { new: true }
         );
 
-        throw new HttpException('Update is done', 200);
+        return res.status(200).send({ success: true, message: "Update is done" });
       } else {
         throw new HttpException('User not found', 404);
       }

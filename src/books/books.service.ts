@@ -48,7 +48,11 @@ export class BooksService {
     const books = await this.booksModel.find({ title: str })
 
     if (books) {
-      throw new HttpException(books, 200)
+      return res.status(200).send({ 
+        success: true, 
+        message: "Books have been found",
+        data: books
+      });
     } else throw new HttpException('Books not found', 404)
   } 
 }

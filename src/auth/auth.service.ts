@@ -58,7 +58,7 @@ export class AuthService {
     if (!matchUser) {
       const createdUser = new this.userModel(newUser);
       await createdUser.save();
-      throw new HttpException("User Successfully created", 200);
+      return res.status(201).send({ success: true, message: "User Successfully created" });
     } else {
       throw new UnauthorizedException(`User with e-mail "${matchUser.email}" alredy exist!`, '401');
     }
