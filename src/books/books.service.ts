@@ -16,7 +16,7 @@ export class BooksService {
     return books;
   }
 
-  async addBook(req): Promise<Book[] | HttpException | string> {
+  async addBook(req): Promise<Book[] | HttpException > {
     const token: string = req.headers.authorization.split(" ")[1];
 
     const decoded = await jwt.verify(token, 'secret');
@@ -37,8 +37,8 @@ export class BooksService {
       const createdUser = new this.booksModel(newBook);
       await createdUser.save();
 
-      return new HttpException('Book added', 201);
-    } else return "Requset body  is incorrect!"
+      throw new HttpException('Book added', 201);
+    } else throw new HttpException('The book was not added. You are not admin', 401);
   }
 
   async searchBook(req, res): Promise<Book[]> {
@@ -48,19 +48,7 @@ export class BooksService {
     const books = await this.booksModel.find({ title: str })
 
     if (books) {
-      return res.status(200).send({
-        success: false,
-        message: `Books`,
-        data: books
-      });
-    } else {
-      return res.status(404).send({
-        success: false,
-        message: 'Books not found',
-        data: null
-      });
-    }
+      throw new HttpException(books, 200)
+    } else throw new HttpException('Books not found', 404)
   } 
-
-
 }

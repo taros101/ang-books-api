@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './users.interface';
 import * as bcrypt from "bcrypt"
 import * as jwt from "jwt-then";
+import { HttpException } from "@nestjs/common"
 
 @Injectable()
 export class UsersService {
@@ -21,8 +22,7 @@ export class UsersService {
     return user
   }
 
-  async findUser(req, res): Promise<User[]> {
-    try {
+  async findUser(req): Promise<User[]> {
       const foundedUser = await this.userModel.findOne({ _id: req.params.id })
       const userRole: any = await this.rolesModel.findOne({_id: foundedUser.roles[0]})
 
@@ -34,28 +34,13 @@ export class UsersService {
       }
       
       if (user) {
-        return res.status(200).send({
-          success: true,
-          data: user
-        });
+        throw new HttpException(user, 200);
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
-
+        throw new HttpException('User not found', 404);
       }
-    } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
-    }
   }
 
-  async changeAvatar(req, res): Promise<User[]> {
-    try {
+  async changeAvatar(req): Promise<User[]> {
       const newAvatar = req.body.newAvatar
       const check = await this.userModel.findOne({ _id: req.params.id })
   
@@ -70,27 +55,13 @@ export class UsersService {
           { new: true }
         );
 
-        return res.status(200).send({
-          success: true,
-          message: 'Update is done'
-        });
+        throw new HttpException('Update is done', 200);
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
+        throw new HttpException('User not found', 404);
       }
-    } catch (err) { 
-      res.status(500).send({
-        success: false,
-        message: err
-      });
-    }
   }
 
   async editUser(req, res): Promise<User[]> {
-    try {
       const token: string = req.headers.authorization.split(" ")[1];
 
       const decoded = await jwt.verify(token, 'secret');
@@ -107,29 +78,15 @@ export class UsersService {
         },
         { new: true }
       );
-      if (!userUpdated) {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
-      } else {
-        res.status(200).send({
-          success: true,
-          message: 'Update is done',
-        });
-      }
 
-    } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
-    }
+      if (userUpdated) {
+        throw new HttpException('Update is done', 200);
+      } else {
+        throw new HttpException('User not found', 404);
+      }
   }
 
   async deleteUser(req, res): Promise<User[]> {
-    try {
       const token: string = req.headers.authorization.split(" ")[1];
 
       const decoded = await jwt.verify(token, 'secret');
@@ -141,25 +98,9 @@ export class UsersService {
 
       if (check) {
         await this.userModel.findByIdAndRemove(req.params.id);
-
-        res.status(200).send({
-          success: true,
-          message: 'Delete is done'
-        });
+        throw new HttpException('Delete is done', 200);
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
+        throw new HttpException('User not found', 404);
       }
-
-
-    } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
-    }
   }
 }

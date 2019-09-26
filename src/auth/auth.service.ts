@@ -53,29 +53,14 @@ export class AuthService {
       roles: []
     };
     newUser.roles.push(userRole._id)
+    const matchUser: User = await this.userModel.findOne({ email: req.body.email })
 
-    try {
-      const matchUser: User = await this.userModel.findOne({ email: req.body.email })
-
-      if (!matchUser) {
-        const createdUser = new this.userModel(newUser);
-        await createdUser.save();
-        return res.status(200).send({
-          success: true,
-          message: "User Successfully created"
-        });
-      } else {
-        return res.status(401).send({
-          success: false,
-          message: `User with e-mail "${matchUser.email}" alredy exist!`
-        });
-      }
-
-    } catch (err) { 
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+    if (!matchUser) {
+      const createdUser = new this.userModel(newUser);
+      await createdUser.save();
+      throw new HttpException("User Successfully created", 200);
+    } else {
+      throw new UnauthorizedException(`User with e-mail "${matchUser.email}" alredy exist!`, '401');
     }
   }
 }

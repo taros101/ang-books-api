@@ -16,13 +16,13 @@ export class UsersController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
-    findUser(@Req() req: Request, @Res() res: Response): any {
-        return this.usersService.findUser(req, res);
+    findUser(@Req() req: Request): any {
+        return this.usersService.findUser(req);
     }
 
     @Put('/:id')
-    changeAvatar(@Req() req: Request, @Res() res: Response ): any {
-        return this.usersService.changeAvatar(req, res);
+    changeAvatar(@Req() req: Request): any {
+        return this.usersService.changeAvatar(req);
     }
 
     @UseGuards(AuthGuard('jwt'))

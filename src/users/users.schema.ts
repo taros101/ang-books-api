@@ -1,7 +1,5 @@
 import { Schema, model } from 'mongoose';
 
-const Roles = require('./roles.schema.js');
-
 export const UserSchema = new Schema({
   email: String,
   password: String,
