@@ -80,7 +80,7 @@ export class UsersService {
       );
 
       if (userUpdated) {
-        throw new HttpException('Update is done', 200);
+        return res.status(200).send({ success: true, message: "Update is done" });
       } else {
         throw new HttpException('User not found', 404);
       }
@@ -98,7 +98,7 @@ export class UsersService {
 
       if (check) {
         await this.userModel.findByIdAndRemove(req.params.id);
-        throw new HttpException('Delete is done', 200);
+        return res.status(200).send({ success: true, message: "Delete is done" });
       } else {
         throw new HttpException('User not found', 404);
       }

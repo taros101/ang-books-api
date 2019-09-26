@@ -16,7 +16,7 @@ export class BooksService {
     return books;
   }
 
-  async addBook(req): Promise<Book[] | HttpException > {
+  async addBook(req, res): Promise<Book[] | HttpException > {
     const token: string = req.headers.authorization.split(" ")[1];
 
     const decoded = await jwt.verify(token, 'secret');
@@ -37,7 +37,7 @@ export class BooksService {
       const createdUser = new this.booksModel(newBook);
       await createdUser.save();
 
-      throw new HttpException('Book added', 201);
+      return res.status(201).send({ success: true, message: "Book added" });
     } else throw new HttpException('The book was not added. You are not admin', 401);
   }
 

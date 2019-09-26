@@ -14,8 +14,8 @@ export class BooksController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('/addBook')
-    addBook(@Req() req: Request): any {
-        return this.booksService.addBook(req);
+    addBook(@Req() req: Request, @Res() res: Response): any {
+        return this.booksService.addBook(req, res);
     }
 
     @Get('/:title')
