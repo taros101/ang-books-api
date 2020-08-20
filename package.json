@@ -27,7 +27,7 @@
     "@nestjs/platform-express": "^6.0.0",
     "@types/dotenv": "^6.1.1",
     "@types/jwt-then": "^1.0.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.1.0",
     "helmet": "^3.21.0",
     "jwt-then": "^1.0.1",
